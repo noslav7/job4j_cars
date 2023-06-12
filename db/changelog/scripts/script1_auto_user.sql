@@ -1,5 +1,5 @@
-CREATE TABLE auto_user(
-    id bigint auto_increment,
-    login varchar(100),
-    password varchar(100)
+create table auto_user (
+    id          serial primary key,
+    login       varchar unique not null,
+    password    varchar not null
 );

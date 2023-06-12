@@ -1,6 +1,6 @@
-CREATE TABLE auto_post(
-    id bigint auto_increment,
-    description VARCHAR(1000),
-    created TIMESTAMP,
-    auto_user_id int references auto_user(id)
+create table auto_post (
+    id              serial primary key,
+    description     varchar not null,
+    created         timestamp not null,
+    auto_user_id    int references auto_user (id) not null
 );
