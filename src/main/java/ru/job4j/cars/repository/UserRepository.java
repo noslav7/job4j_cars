@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.job4j.cars.model.User;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,7 +58,9 @@ public class UserRepository {
         Session session = sf.openSession();
         try {
             session.beginTransaction();
-            session.delete(findById(userId));
+            session.createQuery(
+                            "DELETE ru.job4j.cars.model.User u WHERE u.id = :fId")
+                    .setParameter("fId", userId);
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
@@ -72,11 +75,11 @@ public class UserRepository {
      */
     public List<User> findAllOrderById() {
         Session session = sf.openSession();
-        List result = null;
+        List<User> result = Collections.emptyList();
         try {
             session.beginTransaction();
-            result = session.createQuery(
-                    "from ru.job4j.cars.model.User user ORDER BY user.id Asc").list();
+            result = (List<User>) session.createQuery(
+                    "from ru.job4j.cars.model.User u ORDER BY u.id Asc");
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
@@ -95,11 +98,16 @@ public class UserRepository {
         User result = null;
         try {
             session.beginTransaction();
-            result = session.get(User.class, userId);
+            result = (User) session.createQuery(
+                    "from ru.job4j.cars.model.User u where u.id = :id")
+                    .setParameter("id", userId).uniqueResult();
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        }
+        if (result == null) {
+            result = (User) Collections.emptyList();
         }
         return Optional.of(result);
     }
@@ -115,9 +123,9 @@ public class UserRepository {
         List<User> result = null;
         try {
             session.beginTransaction();
-            session.createQuery("from ru.job4j.cars.model.User user where user.login = :k")
-                    .setParameter("k", key)
-                    .executeUpdate();
+            result = session.createQuery(
+                    "from ru.job4j.cars.model.User u where u.login like :k")
+                    .setParameter("k", key).list();
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
@@ -137,11 +145,16 @@ public class UserRepository {
         User result = null;
         try {
             session.beginTransaction();
-            result = session.get(User.class, login);
+            result = (User) session.createQuery(
+                    "from ru.job4j.cars.model.User as u where u.login = :fLogin")
+                    .setParameter("fLogin", login).uniqueResult();
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        }
+        if (result == null) {
+            result = (User) Collections.emptyList();
         }
         return Optional.of(result);
     }
