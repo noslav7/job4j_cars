@@ -59,7 +59,7 @@ public class UserRepository {
         try {
             session.beginTransaction();
             session.createQuery(
-                            "DELETE User u WHERE u.id = :fId")
+                            "DELETE User u WHERE u.id = :fId", User.class)
                     .setParameter("fId", userId);
             session.getTransaction().commit();
             session.close();
@@ -79,7 +79,7 @@ public class UserRepository {
         try {
             session.beginTransaction();
             result = session.createQuery(
-                            "User u ORDER BY u.id Asc")
+                            "User u ORDER BY u.id Asc", User.class)
                     .list();
             session.getTransaction().commit();
             session.close();
@@ -101,7 +101,8 @@ public class UserRepository {
             session.beginTransaction();
             result = session.createQuery(
                             "from User u where u.id = :id", User.class)
-                    .setParameter("id", userId).uniqueOptionalResult();
+                    .setParameter("id", userId)
+                    .uniqueResultOptional();
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
@@ -122,7 +123,7 @@ public class UserRepository {
         try {
             session.beginTransaction();
             result = session.createQuery(
-                            "from User u where u.login like :k")
+                            "from User u where u.login like :k", User.class)
                     .setParameter("k", key)
                     .list();
             session.getTransaction().commit();
@@ -144,9 +145,9 @@ public class UserRepository {
         Optional<User> result = Optional.empty();
         try {
             session.beginTransaction();
-            result = Optional.of((User) session.createQuery(
-                            "from User as u where u.login = :fLogin")
-                    .setParameter("fLogin", login).uniqueResult());
+            result = session.createQuery(
+                            "from User as u where u.login = :fLogin", User.class)
+                    .setParameter("fLogin", login).uniqueResultOptional();
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
