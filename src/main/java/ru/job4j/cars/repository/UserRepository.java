@@ -79,7 +79,7 @@ public class UserRepository {
         try {
             session.beginTransaction();
             result = session.createQuery(
-                    "User u ORDER BY u.id Asc")
+                            "User u ORDER BY u.id Asc")
                     .list();
             session.getTransaction().commit();
             session.close();
@@ -99,9 +99,9 @@ public class UserRepository {
         Optional<User> result = Optional.empty();
         try {
             session.beginTransaction();
-            result = Optional.of((User) session.createQuery(
-                    "from User u where u.id = :id")
-                    .setParameter("id", userId).uniqueResult());
+            result = session.createQuery(
+                            "from User u where u.id = :id", User.class)
+                    .setParameter("id", userId).uniqueOptionalResult();
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
@@ -122,7 +122,7 @@ public class UserRepository {
         try {
             session.beginTransaction();
             result = session.createQuery(
-                    "from User u where u.login like :k")
+                            "from User u where u.login like :k")
                     .setParameter("k", key)
                     .list();
             session.getTransaction().commit();
@@ -145,7 +145,7 @@ public class UserRepository {
         try {
             session.beginTransaction();
             result = Optional.of((User) session.createQuery(
-                    "from User as u where u.login = :fLogin")
+                            "from User as u where u.login = :fLogin")
                     .setParameter("fLogin", login).uniqueResult());
             session.getTransaction().commit();
             session.close();
